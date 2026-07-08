@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun FlashCardPager(viewModel: CardsViewModel, navController: NavController) {
     val cards = viewModel.onlineCardsList.collectAsState()
+    val deletedCards = viewModel.deletedCardsList.collectAsState()
     val pagerState = rememberPagerState(pageCount = {
         cards.value.flashcards.count()
     })
@@ -82,14 +83,31 @@ fun FlashCardPager(viewModel: CardsViewModel, navController: NavController) {
                     Text("Next")
                 }
             }
-            Button(
-                enabled = cards.value.flashcards.isNotEmpty(),
-                onClick = {
-                    val currentCard = cards.value.flashcards[pagerState.currentPage]
-                    viewModel.deleteCurrentCard(currentCard?.id)
-                }
+            Spacer(modifier = Modifier.width(16.dp))
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Text("Delete Flashcard")
+                Button(
+                    enabled = cards.value.flashcards.isNotEmpty(),
+                    onClick = {
+                        val currentCard = cards.value.flashcards[pagerState.currentPage]
+                        viewModel.deleteCurrentCard(currentCard?.id)
+                    },
+                    modifier = Modifier.width(150.dp)
+                ) {
+                    Text("Delete Card")
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                Button(
+                    enabled = deletedCards.value.flashcards.isNotEmpty(),
+                    onClick = {
+                        deletedCards.value.flashcards.lastOrNull()?.id?.let { cardId ->
+                            viewModel.restoreLastCard(cardId)
+                        }
+                    },
+                ) {
+                    Text("Restore Card")
+                }
             }
         }
     }
