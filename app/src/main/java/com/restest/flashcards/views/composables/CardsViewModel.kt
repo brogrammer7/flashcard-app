@@ -25,6 +25,9 @@ class CardsViewModel(
     private val _onlineCardsList = MutableStateFlow(CardResponse())
     val onlineCardsList: StateFlow<CardResponse> = _onlineCardsList.asStateFlow()
 
+    private val _deletedCardsList = MutableStateFlow(CardResponse())
+    val deletedCardsList: StateFlow<CardResponse> = _deletedCardsList.asStateFlow()
+
     init {
         collectRepositoryEvents()
         getFlashCards()
@@ -57,10 +60,35 @@ class CardsViewModel(
 
     fun deleteCurrentCard(cardId: String?) {
         val currentList = _onlineCardsList.value.flashcards.toMutableList()
+        val deletedCard = currentList.find { it?.id == cardId }
+
         currentList.removeAll { it?.id == cardId }
-        _onlineCardsList.value = _onlineCardsList.value.copy(
-            flashcards = currentList
-        )
+
+        //Store deleted card(s) in case user presses Restore button
+        deletedCard?.let {
+            val deletedList = _deletedCardsList.value.flashcards.toMutableList()
+            deletedList.add(it)
+            _deletedCardsList.value = _deletedCardsList.value.copy(flashcards = deletedList)
+        }
+
+        _onlineCardsList.value = _onlineCardsList.value.copy(flashcards = currentList)
+    }
+
+    fun restoreLastCard(cardId: String?) {
+        if (cardId == null) return
+
+        val deletedList = _deletedCardsList.value.flashcards.toMutableList()
+        val cardToRestore = deletedList.find { it?.id == cardId }
+
+        if (cardToRestore != null) {
+            deletedList.remove(cardToRestore)
+            _deletedCardsList.value = _deletedCardsList.value.copy(flashcards = deletedList)
+
+            //Return a deleted card back to the beginning of the card list
+            val onlineList = _onlineCardsList.value.flashcards.toMutableList()
+            onlineList.add(0, cardToRestore)
+            _onlineCardsList.value = _onlineCardsList.value.copy(flashcards = onlineList)
+        }
     }
 
     private fun collectRepositoryEvents() {
