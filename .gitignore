@@ -22,3 +22,11 @@ secrets.properties
 .idea/planningMode.xml
 .idea/markdown.xml
 .idea/deviceManager.xml
+app/.idea/AndroidProjectSystem.xml
+app/.idea/gradle.xml
+app/.idea/migrations.xml
+app/.idea/misc.xml
+app/.idea/runConfigurations.xml
+app/.idea/vcs.xml
+app/.idea/workspace.xml
+app/.idea/caches/deviceStreaming.xml
