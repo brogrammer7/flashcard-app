@@ -47,6 +47,22 @@ class CardsViewModel(
         }
     }
 
+    fun deleteLastCard() {
+        val currentList = _onlineCardsList.value.flashcards.toMutableList()
+        currentList.removeAt(currentList.lastIndex)
+        _onlineCardsList.value = _onlineCardsList.value.copy(
+            flashcards = currentList
+        )
+    }
+
+    fun deleteCurrentCard(cardId: String?) {
+        val currentList = _onlineCardsList.value.flashcards.toMutableList()
+        currentList.removeAll { it?.id == cardId }
+        _onlineCardsList.value = _onlineCardsList.value.copy(
+            flashcards = currentList
+        )
+    }
+
     private fun collectRepositoryEvents() {
         viewModelScope.launch(dispatcher) {
             repository.events.collect { event ->
