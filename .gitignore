@@ -10,7 +10,7 @@
 /.idea/vcs.xml
 /.idea/misc.xml
 .DS_Store
-/build
+build/
 /captures
 .externalNativeBuild
 .cxx
@@ -22,4 +22,3 @@ secrets.properties
 .idea/planningMode.xml
 .idea/markdown.xml
 .idea/deviceManager.xml
-.idea/misc.xml
