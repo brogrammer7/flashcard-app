@@ -34,7 +34,7 @@ fun FlashCardList(
     viewModel : CardsViewModel,
     navController: NavController
 ) {
-    val cards = viewModel.cardList.collectAsState()
+    val cards = viewModel.onlineCardsList.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -42,16 +42,16 @@ fun FlashCardList(
                 .padding(16.dp)
                 .padding(top = 32.dp)
         ) {
-            items(cards.value) { flashCard ->
+            items(cards.value.flashcards) { flashCard ->
 
                 Text(
-                    text = flashCard.topic,
+                    text = flashCard?.slug ?: "Error retrieving title",
                     style = MaterialTheme.typography.titleSmall,
                     color = Color.Gray
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = flashCard.question,
+                    text = flashCard?.question ?: "Error retrieving question",
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Medium,
                     fontSize = 18.sp

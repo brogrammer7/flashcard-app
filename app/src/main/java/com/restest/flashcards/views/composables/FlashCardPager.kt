@@ -29,21 +29,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.restest.flashcards.data.model.FlashCard
+import com.restest.flashcards.data.model.OnlineCard
 import com.restest.flashcards.views.navigation.Screen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FlashCardPager(viewModel: CardsViewModel, navController: NavController) {
-    val cards = viewModel.cardList.collectAsState()
+    val cards = viewModel.onlineCardsList.collectAsState()
     val pagerState = rememberPagerState(pageCount = {
-        cards.value.count()
+        cards.value.flashcards.count()
     })
     val scope = rememberCoroutineScope()
     Box(modifier = Modifier.fillMaxSize()) {
         HorizontalPager(state = pagerState, modifier = Modifier.align(Alignment.TopStart)) { page ->
-            FlashCardView(flashCard = cards.value[page])
+            FlashCardView(flashCard = cards.value.flashcards[page])
         }
 
         Row(
@@ -85,14 +85,14 @@ fun FlashCardPager(viewModel: CardsViewModel, navController: NavController) {
 
 
 @Composable
-private fun FlashCardView(flashCard: FlashCard) {
+private fun FlashCardView(flashCard: OnlineCard?) {
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = flashCard.topic, style = MaterialTheme.typography.headlineMedium)
+        Text(text = flashCard?.slug ?: "Error retrieving title", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(20.dp))
-        Text(text = flashCard.question, style = MaterialTheme.typography.titleLarge)
+        Text(text = flashCard?.question ?: "Error retrieving question", style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.height(12.dp))
         Text(
-            text = flashCard.answer,
+            text = flashCard?.answer ?: "Error retrieving answer",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .background(color = Color.LightGray, shape = RoundedCornerShape(8.dp))
