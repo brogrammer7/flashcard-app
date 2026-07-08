@@ -46,38 +46,50 @@ fun FlashCardPager(viewModel: CardsViewModel, navController: NavController) {
             FlashCardView(flashCard = cards.value.flashcards[page])
         }
 
-        Row(
+        Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
+                .padding(16.dp)
         ) {
-            Button(
-                onClick = {
-                    if (pagerState.currentPage > 0) {
-                        scope.launch {
-                            pagerState.scrollToPage(pagerState.currentPage - 1)
-                        }
-                    }
-                },
-                enabled = pagerState.currentPage > 0,
-                modifier = Modifier.width(150.dp)
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Text("Previous")
+                Button(
+                    onClick = {
+                        if (pagerState.currentPage > 0) {
+                            scope.launch {
+                                pagerState.scrollToPage(pagerState.currentPage - 1)
+                            }
+                        }
+                    },
+                    enabled = pagerState.currentPage > 0,
+                    modifier = Modifier.width(150.dp)
+                ) {
+                    Text("Previous")
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                Button(
+                    onClick = {
+                        if (pagerState.currentPage < pagerState.pageCount - 1) {
+                            scope.launch {
+                                pagerState.scrollToPage(pagerState.currentPage + 1)
+                            }
+                        }
+                    },
+                    enabled = pagerState.currentPage < pagerState.pageCount - 1,
+                    modifier = Modifier.width(150.dp)
+                ) {
+                    Text("Next")
+                }
             }
-            Spacer(modifier = Modifier.width(16.dp))
             Button(
+                enabled = cards.value.flashcards.isNotEmpty(),
                 onClick = {
-                    if (pagerState.currentPage < pagerState.pageCount - 1) {
-                        scope.launch {
-                            pagerState.scrollToPage(pagerState.currentPage + 1)
-                        }
-                    }
-                },
-                enabled = pagerState.currentPage < pagerState.pageCount - 1,
-                modifier = Modifier.width(150.dp)
+                    val currentCard = cards.value.flashcards[pagerState.currentPage]
+                    viewModel.deleteCurrentCard(currentCard?.id)
+                }
             ) {
-                Text("Next")
+                Text("Delete Flashcard")
             }
         }
     }
